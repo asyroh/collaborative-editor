@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Models\Document;
 use App\Models\DocumentVersion;
@@ -16,21 +17,60 @@ class DocumentController extends Controller
         return view('editor', compact('document'));
     }
 
-    public function update(Request $request, int $id)
-    {
-        $document = Document::findOrFail($id);
+   public function update(Request $request, int $id)
+{
+    $document = Document::findOrFail($id);
 
-       $document->content = $request->input('content');
-        $document->save();
+    if ($document->content != $request->input('content')) {
 
         DocumentVersion::create([
             'document_id' => $document->id,
-           'user_id' => Auth::id(),
+            'user_id' => Auth::id(),
             'content' => $request->input('content')
         ]);
+
+        $document->content = $request->input('content');
+        $document->save();
+    }
+
+    return response()->json([
+        'success' => true
+    ]);
+}
+
+    public function cursor(Request $request, int $id)
+    {
+       Cache::put(
+
+            'cursor_'.$id,
+
+            Auth::user()->name . ' is typing...',
+
+            10
+
+        );
 
         return response()->json([
             'success' => true
         ]);
     }
+
+    public function getCursor(int $id)
+    {
+        return response()->json([
+
+            'message' => Cache::get('cursor_'.$id)
+
+        ]);
+    }
+
+   public function history(int $id)
+{
+    $versions = DocumentVersion::where(
+        'document_id',
+        $id
+    )->latest()->get();
+
+    return view('history', compact('versions'));
+}
 }

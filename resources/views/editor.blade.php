@@ -62,10 +62,26 @@
 
         <h1>{{ $document->title }}</h1>
 
+        <a href="/documents/{{ $document->id }}/history"
+        style="
+        display:inline-block;
+        margin-bottom:20px;
+        padding:8px 15px;
+        background:#2563eb;
+        color:white;
+        text-decoration:none;
+        border-radius:6px;
+        ">
+
+            Revision
+
+        </a>
+
         <textarea id="editor">{{ $document->content }}</textarea>
 
         <p id="status">Saving...</p>
 
+        <p id="typing"></p>
 
     </div>
 
@@ -76,29 +92,39 @@
 const editor = document.getElementById('editor');
 const status = document.getElementById('status');
 
-setInterval(() => {
+let timeout = null;
 
-    status.innerHTML = "Saving...";
+editor.addEventListener('keyup', () => {
 
-    axios.post('/documents/{{ $document->id }}/update', {
+    status.innerHTML = 'Saving...';
 
-        content: editor.value
+    clearTimeout(timeout);
 
-    })
+    timeout = setTimeout(() => {
 
-    .then(() => {
+        axios.post('/documents/{{ $document->id }}/update', {
+            content: editor.value
+        })
 
-        status.innerHTML = "Saved ✔";
+        .then((response) => {
 
-    })
+            status.innerHTML = 'Saved';
 
-    .catch(() => {
+        });
 
-        status.innerHTML = "Error saving";
+    }, 1000);
 
-    });
+});
 
-}, 2000);
+</script>
+<script>
+
+editor.addEventListener('keyup', () => {
+
+    axios.post('/documents/{{ $document->id }}/cursor');
+
+});
+
 
 </script>
 </body>

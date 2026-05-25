@@ -26,6 +26,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/documents/{id}/update',
         [DocumentController::class, 'update']);
-    
 
+    Route::post('/documents/{id}/cursor',
+        [DocumentController::class, 'cursor']);
+    
+    Route::get('/documents/{id}/cursor',
+        [DocumentController::class, 'getCursor']);
+
+    Route::get('/documents/{id}/history',
+        [DocumentController::class, 'history']);
+    
 });
