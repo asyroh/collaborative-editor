@@ -3,13 +3,12 @@
 Laravel-based collaborative document editor similar to Google Docs.
 
 ## Features
-- Multi-user editing
-- Auto save
-- Realtime collaborative sync
-- Version history
-- Conflict resolution
-- Authentication
-
+-Multi-user editing
+-Auto save document
+-Live typing indicator
+-Revision history
+-Last editor tracking
+-Conflict resolution (revision tracking)
 ## Tech Stack
 - Laravel
 - MySQL
