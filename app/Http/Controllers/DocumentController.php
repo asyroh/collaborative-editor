@@ -31,7 +31,13 @@ class DocumentController extends Controller
 
         $document->content = $request->input('content');
         $document->save();
-    }
+
+        Cache::put(
+            'last_editor_'.$id,
+            Auth::user()->name,
+            60
+        );
+            }
 
     return response()->json([
         'success' => true
@@ -62,6 +68,13 @@ class DocumentController extends Controller
             'message' => Cache::get('cursor_'.$id)
 
         ]);
+    }
+
+    public function lastEditor(int $id)
+    {
+    return response()->json([
+        'editor' => Cache::get('last_editor_'.$id)
+    ]);
     }
 
    public function history(int $id)

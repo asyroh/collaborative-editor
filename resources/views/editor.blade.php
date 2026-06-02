@@ -77,11 +77,14 @@
 
         </a>
 
-        <textarea id="editor">{{ $document->content }}</textarea>
+        <p id="last-editor" style="color:green;font-weight:bold;"></p>
 
-        <p id="status">Saving...</p>
+        <p id="typing" style="color:blue;font-weight:bold;"></p>
 
-        <p id="typing"></p>
+       <textarea id="editor">{{ $document->content }}</textarea>
+
+        <p id="status">Saved</p>
+
 
     </div>
 
@@ -125,6 +128,31 @@ editor.addEventListener('keyup', () => {
 
 });
 
+setInterval(() => {
+
+    axios.get('/documents/{{ $document->id }}/cursor')
+
+    .then((response) => {
+
+        document.getElementById('typing').innerHTML =
+            response.data.message ?? '';
+
+    });
+
+}, 1000);
+
+setInterval(() => {
+
+    axios.get('/documents/{{ $document->id }}/last-editor')
+
+    .then((response) => {
+
+        document.getElementById('last-editor').innerHTML =
+            'Last edited by: ' + (response.data.editor ?? '-');
+
+    });
+
+}, 1000);
 
 </script>
 </body>

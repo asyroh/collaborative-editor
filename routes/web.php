@@ -36,4 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/documents/{id}/history',
         [DocumentController::class, 'history']);
     
+        Route::get('/documents/{id}/last-editor',
+    [DocumentController::class, 'lastEditor']);
+    
 });
